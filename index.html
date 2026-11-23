@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>معمل الذكاء الاصطناعي - مشكاة المنار</title>
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="معمل الذكاء">
+
+<!-- مكتبة تصدير PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- مكتبة الحركات الانتقالية AOS -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<style>
+  :root{
+    --bg:#0f172a; --card:#1e293b; --accent:#38bdf8; --accent2:#a78bfa;
+    --ok:#34d399; --text:#e2e8f0; --muted:#94a3b8; --danger:#ef4444;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,sans-serif;-webkit-tap-highlight-color: transparent;}
+  html { scroll-behavior: smooth; }
+  body{
+    background:radial-gradient(circle at top right,#1e3a8a 0%,var(--bg) 45%);
+    color:var(--text);min-height:100vh;padding-bottom:60px;overflow-x: hidden;
+  }
+
+  /* ======= زر التثبيت المخصص ======= */
+  .custom-install-btn {
+    position: fixed; top: 15px; left: 15px; z-index: 9999;
+    background: linear-gradient(135deg, #10b981, #059669); color: #fff;
+    border: none; padding: 10px 15px; border-radius: 30px; font-size: 0.9rem;
+    font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;
+    animation: pulse-green 2s infinite;
+  }
+  .custom-install-btn:hover { transform: scale(1.05); }
+  @keyframes pulse-green {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  }
+
+  /* ======= الشعارات (تم ضبطها للجوال) ======= */
+  .header-logos {
+    display: flex; justify-content: center; align-items: center; gap: 15px; padding: 15px;
+    background: rgba(30, 41, 59, 0.7); border-bottom: 2px solid #334155; margin-bottom: 15px;
+    flex-wrap: nowrap; /* منع النزول لسطر جديد في الجوال */
+    animation: fadeInDown 1s ease; overflow-x: auto;
+  }
+  .logo-box {
+    background: #fff; padding: 8px 12px; border-radius: 10px; display: flex;
+    flex-direction: column; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    flex: 1; max-width: 170px; /* تصغير الحجم */
+  }
+  
+  /* شعار المشكاة (نسخة الجوال) */
+  .meshkat-logo { position: relative; width: 80px; height: 60px; display: flex; flex-direction: column; align-items: center; }
+  .meshkat-sun { width: 24px; height: 24px; background: #e53935; border-radius: 50%; margin-bottom: -5px; z-index: 2; }
+  .meshkat-book { position: relative; width: 70px; height: 30px; display: flex; justify-content: center; z-index: 1; }
+  .meshkat-page { position: absolute; bottom: 0; width: 6px; height: 30px; background: #4caf50; transform-origin: bottom center; border-radius: 2px 2px 0 0; }
+  .meshkat-page:nth-child(1) { transform: rotate(-60deg); background: #43a047; }
+  .meshkat-page:nth-child(2) { transform: rotate(-40deg); background: #66bb6a; }
+  .meshkat-page:nth-child(3) { transform: rotate(-20deg); background: #81c784; }
+  .meshkat-page:nth-child(4) { transform: rotate(0deg); background: #4caf50; }
+  .meshkat-page:nth-child(5) { transform: rotate(20deg); background: #81c784; }
+  .meshkat-page:nth-child(6) { transform: rotate(40deg); background: #66bb6a; }
+  .meshkat-page:nth-child(7) { transform: rotate(60deg); background: #43a047; }
+  .meshkat-arc { position: absolute; bottom: -5px; width: 80px; height: 30px; border-bottom: 5px solid #c62828; border-radius: 50%; z-index: 0; }
+  .meshkat-text-ar { color: #b71c1c; font-weight: bold; font-size: 10px; margin-top: 8px; text-align: center; }
+  .meshkat-text-en { color: #388e3c; font-weight: bold; font-size: 9px; margin-top: 2px; }
+
+  /* شعار التقنية (نسخة الجوال) */
+  .tech-logo-svg { width: 110px; height: 55px; }
+  .tech-text { color: #333; font-weight: bold; font-size: 9px; margin-top: 3px; text-align: center; }
+
+  /* ======= الهيدر والمقدمين ======= */
+  header { text-align: center; padding: 5px 15px 20px; animation: fadeIn 1.5s ease; }
+  header h1 {
+    font-size: 1.5rem; /* تصغير العنوان للجوال */
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 5px;
+    line-height: 1.4;
+  }
+  header .subtitle { color: var(--accent); font-size: 0.9rem; font-weight: bold; }
+  
+  /* شريط الأسماء */
+  .presenters-container {
+    display: flex; flex-direction: column; /* فوق بعض في الجوال */
+    align-items: center; max-width: 100%; margin: 15px auto 0; gap: 10px;
+  }
+  .presenter-box {
+    background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(167,139,250,0.1));
+    border: 1px solid #334155; border-radius: 10px; padding: 10px; width: 90%;
+    text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.3s;
+  }
+  .presenter-box.right { border-right: 4px solid var(--accent); }
+  .presenter-box.left { border-left: 4px solid var(--accent2); }
+  .presenter-box span { display: block; color: var(--muted); font-size: 0.75rem; margin-bottom: 3px; }
+  .presenter-box strong { color: #fff; font-size: 1rem; }
+  .presenter-box.left strong { color: var(--accent2); }
+  .divider-line { display: none; }
+
+  /* ======= شريط الصفوف ======= */
+  .grade-bar{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin:20px auto; padding:0 10px; }
+  .grade-bar button{
+    background:var(--card); border:1px solid #334155; color:var(--text);
+    padding:6px 10px; border-radius:15px; cursor:pointer; font-size:.75rem; transition:.3s;
+  }
+  .grade-bar button.active{
+    background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#0f172a; font-weight:700; border-color:transparent;
+    box-shadow: 0 0 10px rgba(56,189,248,0.5); transform: scale(1.05);
+  }
+
+  /* ======= بطاقات الأدوات ======= */
+  .tools{
+    max-width:1200px; margin:0 auto; padding:15px;
+    display:grid; grid-template-columns:1fr; gap:20px;
+  }
+  .tool-card{
+    background:var(--card); border-radius:15px; padding:15px; border:1px solid #334155;
+    box-shadow:0 5px 15px rgba(0,0,0,.3); transition:.4s;
+  }
+  .tool-header{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px; }
+  .tool-card h2{ font-size:1.1rem; color:var(--accent); }
+  .ext-link{
+    font-size:.7rem; color:var(--accent2); text-decoration:none; background:#111c33;
+    border:1px solid #334155; padding:4px 8px; border-radius:10px; white-space:nowrap;
+  }
+  .tool-card .func{ color:var(--muted); font-size:.85rem; margin-bottom:12px; line-height:1.5; }
+  
+  /* ======= صندوق المحاكاة ======= */
+  .sim-box{ background:#0b1220; border-radius:10px; padding:12px; border:1px dashed #334155; }
+  .sim-box label{ display:block; font-size:.8rem; color:var(--muted); margin-bottom:5px; }
+  .sim-box select,.sim-box input[type=text]{
+    width:100%; padding:8px; border-radius:6px; border:1px solid #334155;
+    background:#111c33; color:var(--text); font-size:.85rem; margin-bottom:10px;
+  }
+  
+  /* ======= الأزرار ======= */
+  .btn{
+    background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#0f172a; font-weight:700;
+    border:none; padding:10px 15px; border-radius:8px; cursor:pointer; font-size:.85rem; transition:.3s;
+    width: 100%; /* الأزرار بعرض كامل في الجوال */
+  }
+  .btn.small{ padding:8px; font-size:.8rem; }
+  .btn.pdf{ background:linear-gradient(90deg,#f59e0b,#ef4444); color:#fff; font-size:.75rem; margin-top:10px; }
+  
+  /* ======= المخرجات ======= */
+  .output{
+    margin-top:12px; background:#111c33; border-radius:8px; padding:12px;
+    font-size:.85rem; line-height:1.6; color:#cbd5e1; display:none;
+    border-right: 3px solid var(--ok);
+  }
+  .output.show{ display:block; }
+  .output h4{ color:var(--ok); margin-bottom:6px; font-size:.9rem; }
+  
+  .steps{ margin-top:12px; font-size:.75rem; color:var(--muted); line-height:1.7; }
+  .chips{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+  .chip{
+    background:#111c33; border:1px solid #334155; padding:6px 10px; border-radius:12px;
+    font-size:.75rem; cursor:pointer; transition:.2s;
+  }
+  .chip:hover,.chip.active{ border-color:var(--accent); color:var(--accent); }
+  
+  /* رفع الملفات */
+  .file-input-wrapper { margin-bottom: 10px; }
+  .file-input-wrapper input[type="file"] { display: none; }
+  .file-label {
+    display: block; background: #1e3a8a; color: white; text-align: center;
+    padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.85rem;
+    border: 2px dashed #38bdf8; transition: 0.3s;
+  }
+  .file-label:hover { background: #2563eb; }
+  .file-name { font-size: 0.75rem; color: var(--ok); margin-top: 5px; text-align: center; display: none; }
+
+  /* ======= محاكاة الفيديو ======= */
+  .video-sim { display: none; margin-top: 15px; background: #000; border-radius: 10px; height: 120px; position: relative; overflow: hidden; border: 2px solid #334155; align-items: center; justify-content: center; flex-direction: column; }
+  .video-sim.show { display: flex; }
+  .video-sim .scanline { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(56, 189, 248, 0.5); box-shadow: 0 0 10px #38bdf8; animation: scan 2s linear infinite; }
+  .video-text { color: #fff; font-size: 1rem; font-weight: bold; z-index: 2; text-align: center; }
+
+  /* ======= محاكاة الموقع ======= */
+  .website-sim { display: none; margin-top: 15px; background: #fff; border-radius: 10px; overflow: hidden; color: #333; }
+  .website-sim.show { display: block; }
+  .web-header { background: #1e3a8a; color: #fff; padding: 6px 10px; font-size: 0.7rem; display: flex; justify-content: space-between;}
+  .web-body { padding: 15px; text-align: center; }
+  .web-body h3 { color: #1e3a8a; margin-bottom: 5px; font-size: 1rem; }
+
+  /* ======= لعبة المسابقات ======= */
+  .quiz-container { background: #1e293b; border: 2px solid var(--accent2); border-radius: 10px; padding: 15px; margin-top: 15px; text-align: center; display: none; }
+  .quiz-container.show { display: block; }
+  .quiz-question { font-size: 0.95rem; font-weight: bold; margin-bottom: 10px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt { background: #111c33; border: 1px solid #334155; color: #fff; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+  .quiz-opt.correct { background: var(--ok); color: #000; }
+  .quiz-opt.wrong { background: var(--danger); color: #fff; }
+  .quiz-score { margin-top: 10px; font-weight: bold; color: var(--accent); font-size: 0.9rem; }
+
+  /* ======= الفوتر ======= */
+  footer { text-align:center; color:var(--muted); font-size:.8rem; margin-top:30px; border-top: 1px solid #334155; padding: 15px; }
+
+  /* ======= الشاشات الكبيرة (الكمبيوتر) ======= */
+  @media (min-width: 768px) {
+    .header-logos { flex-wrap: wrap; gap: 30px; padding: 20px; }
+    .logo-box { padding: 15px 30px; max-width: none; }
+    
+    /* تكبير الشعارات للكمبيوتر */
+    .meshkat-logo { width: 140px; height: 100px; }
+    .meshkat-sun { width: 40px; height: 40px; margin-bottom: -10px; }
+    .meshkat-book { width: 120px; height: 50px; }
+    .meshkat-page { width: 10px; height: 50px; }
+    .meshkat-arc { bottom: -10px; width: 130px; height: 50px; border-bottom: 8px solid #c62828; }
+    .meshkat-text-ar { font-size: 16px; margin-top: 15px; }
+    .meshkat-text-en { font-size: 14px; }
+    .tech-logo-svg { width: 220px; height: 110px; }
+    .tech-text { font-size: 12px; }
+
+    header h1 { font-size: 2.2rem; }
+    header .subtitle { font-size: 1.1rem; }
+    
+    .presenters-container { flex-direction: row; justify-content: space-between; max-width: 900px; gap: 15px; }
+    .presenter-box { width: auto; flex: 1; text-align: right; padding: 15px 25px; }
+    .presenter-box.left { text-align: left; }
+    .presenter-box span { font-size: 0.85rem; }
+    .presenter-box strong { font-size: 1.1rem; }
+    .divider-line { display: block; width: 2px; height: 40px; background: #334155; }
+
+    .grade-bar button{ padding:8px 14px; font-size:.85rem; }
+    .tools { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); padding: 20px; gap: 25px; }
+    .tool-card { padding: 22px; }
+    .tool-card h2{ font-size: 1.25rem; }
+    .btn { width: auto; }
+    
+    .presenter-box.right { text-align: right; }
+  }
+</style>
+</head>
+<body>
+
+<!-- زر التثبيت المخصص -->
+<button class="custom-install-btn" id="pwaInstallBtn" onclick="installPWA()">
+  <span>📲</span> تثبيت
+</button>
+
+<!-- الشعارات -->
+<div class="header-logos">
+  <div class="logo-box">
+    <div class="meshkat-logo">
+      <div class="meshkat-sun"></div>
+      <div class="meshkat-book">
+        <div class="meshkat-page"></div><div class="meshkat-page"></div><div class="meshkat-page"></div>
+        <div class="meshkat-page"></div><div class="meshkat-page"></div><div class="meshkat-page"></div><div class="meshkat-page"></div>
+        <div class="meshkat-arc"></div>
+      </div>
+    </div>
+    <div class="meshkat-text-ar">مجموعة المشكاة التعليمية</div>
+    <div class="meshkat-text-en">تعليم ... وأكثر</div>
+  </div>
+
+  <div class="logo-box">
+    <svg class="tech-logo-svg" viewBox="0 0 220 110" xmlns="http://www.w3.org/2000/svg">
+      <rect x="10" y="15" width="70" height="70" rx="8" fill="#fff" stroke="#1565c0" stroke-width="5"/>
+      <circle cx="45" cy="50" r="18" fill="none" stroke="#1565c0" stroke-width="4"/>
+      <circle cx="35" cy="40" r="5" fill="#1565c0"/><circle cx="55" cy="40" r="5" fill="#1565c0"/><circle cx="45" cy="60" r="5" fill="#1565c0"/>
+      <line x1="35" y1="40" x2="45" y2="60" stroke="#1565c0" stroke-width="3"/><line x1="55" y1="40" x2="45" y2="60" stroke="#1565c0" stroke-width="3"/>
+      <line x1="25" y1="15" x2="25" y2="5" stroke="#1565c0" stroke-width="4"/><line x1="45" y1="15" x2="45" y2="5" stroke="#1565c0" stroke-width="4"/><line x1="65" y1="15" x2="65" y2="5" stroke="#1565c0" stroke-width="4"/>
+      <line x1="25" y1="85" x2="25" y2="95" stroke="#1565c0" stroke-width="4"/><line x1="45" y1="85" x2="45" y2="95" stroke="#1565c0" stroke-width="4"/><line x1="65" y1="85" x2="65" y2="95" stroke="#1565c0" stroke-width="4"/>
+      <line x1="10" y1="35" x2="0" y2="35" stroke="#1565c0" stroke-width="4"/><line x1="10" y1="50" x2="0" y2="50" stroke="#1565c0" stroke-width="4"/><line x1="10" y1="65" x2="0" y2="65" stroke="#1565c0" stroke-width="4"/>
+      <line x1="80" y1="35" x2="90" y2="35" stroke="#1565c0" stroke-width="4"/><line x1="80" y1="50" x2="90" y2="50" stroke="#1565c0" stroke-width="4"/><line x1="80" y1="65" x2="90" y2="65" stroke="#1565c0" stroke-width="4"/>
+      <text x="150" y="45" font-family="Tahoma" font-size="22" font-weight="bold" fill="#000" text-anchor="middle">قسم</text>
+      <text x="150" y="70" font-family="Tahoma" font-size="22" font-weight="bold" fill="#000" text-anchor="middle">التقنية</text>
+    </svg>
+    <div class="tech-text">ثانوية مشكاة المنار الأهلية</div>
+  </div>
+</div>
+
+<header>
+  <h1>🧪 معمل الذكاء الاصطناعي</h1>
+  <div class="subtitle">ثانوية مشكاة المنار الأهلية - الدمام</div>
+  
+  <div class="presenters-container">
+    <div class="presenter-box right">
+      <span>إعداد وتقديم</span>
+      <strong>ENG. Mahmoud Zein-ELdeen</strong>
+    </div>
+    <div class="divider-line"></div>
+    <div class="presenter-box left">
+      <span>تحت إشراف</span>
+      <strong>أ. محمد الخولي</strong>
+      <span style="font-size: 0.75rem; margin-top: 3px;">المشرف التربوي</span>
+    </div>
+  </div>
+  
+  <p style="margin-top: 15px; font-size: 0.9rem;">اختر الصف الدراسي، ثم جرّب الأدوات مباشرة</p>
+</header>
+
+<div class="grade-bar" id="gradeBar"></div>
+
+<div class="tools">
+
+  <!-- 1. NotebookLM (تم تفعيل رفع الملفات الحقيقي) -->
+  <div class="tool-card" data-aos="fade-up" data-aos-delay="100">
+    <div class="tool-header">
+      <h2>1. NotebookLM</h2>
+      <a href="https://notebooklm.google.com/" target="_blank" class="ext-link">🔗 الأداة</a>
+    </div>
+    <div class="func">ارفع ملفك الحقيقي → سيقوم النظام بمحاكاة قراءته وتوليد ملخص وأسئلة.</div>
+    <div class="sim-box">
+      <label>حمّل مادة الدرس (PDF أو صورة)</label>
+      
+      <!-- زر الرفع الحقيقي -->
+      <div class="file-input-wrapper">
+        <label for="fileUpload" class="file-label">📂 اضغط لاختيار ملف من جهازك</label>
+        <input type="file" id="fileUpload" onchange="handleFileUpload(event)">
+        <div class="file-name" id="fileNameDisplay"></div>
+      </div>
+
+      <div class="chips" id="nbActions" style="display:none;margin-top:10px; justify-content: center;">
+        <span class="chip" onclick="simNotebook(this,'summary')">📝 ملخص</span>
+        <span class="chip" onclick="simNotebook(this,'questions')">❓ 5 أسئلة</span>
+        <span class="chip" onclick="simNotebook(this,'audio')">🎧 صوت</span>
+      </div>
+      <div class="output" id="nbOut"></div>
+    </div>
+    <div class="steps"><b>الخطوات:</b> ① ارفع الملف ② اطلب الملخص ③ الأسئلة ④ استمع.</div>
+  </div>
+
+  <!-- 2. MagicSchool -->
+  <div class="tool-card" data-aos="fade-up" data-aos-delay="200">
+    <div class="tool-header">
+      <h2>2. MagicSchool AI</h2>
+      <a href="https://www.magicschool.ai/" target="_blank" class="ext-link">🔗 الأداة</a>
+    </div>
+    <div class="func">يولّد خطة درس واختباراً قصيراً مخصصاً للصف والمادة.</div>
+    <div class="sim-box">
+      <label>المادة</label>
+      <select id="msSubject">
+        <option>علوم حاسوب</option><option>رياضيات</option><option>لغة عربية</option><option>علوم</option>
+      </select>
+      <label>موضوع الدرس</label>
+      <input type="text" id="msTopic" value="مقدمة في الخوارزميات">
+      <button class="btn small" onclick="simMagic()">✨ توليد</button>
+      <div class="output" id="msOut"></div>
+    </div>
+    <div class="steps"><b>الخطوات:</b> اختر المادة → اكتب الموضوع → توليد.</div>
+  </div>
+
+  <!-- 3. Gemini -->
+  <div class="tool-card" data-aos="fade-up" data-aos-delay="300">
+    <div class="tool-header">
+      <h2>3. Google Gemini</h2>
+      <a href="https://gemini.google.com/" target="_blank" class="ext-link">🔗 الأداة</a>
+    </div>
+    <div class="func">مساعد مدمج يحوّل نقاط الدرس إلى أسئلة وسلايدات.</div>
+    <div class="sim-box">
+      <label>نص الدرس</label>
+      <input type="text" id="gmText" value="الخوارزمية هي مجموعة خطوات مرتبة">
+      <button class="btn small" onclick="simGemini()">✨ اطلب</button>
+      <div class="output" id="gmOut"></div>
+    </div>
+    <div class="steps"><b>الخطوات:</b> اكتب النص → اطلب التحويل.</div>
+  </div>
+
+  <!-- 4. Canva -->
+  <div class="tool-card" data-aos="fade-up" data-aos-delay="100">
+    <div class="tool-header">
+      <h2>4. Canva Magic Studio</h2>
+      <a href="https://www.canva.com/education/" target="_blank" class="ext-link">🔗 الأداة</a>
+    </div>
+    <div class="func">أنشئ ملصقاً أو بطاقة تعليمية بنقرة واحدة.</div>
+    <div class="sim-box">
+      <label>وصف التصميم</label>
+      <input type="text" id="cvDesc" value="ملصق عن أمان كلمات المرور">
+      <button class="btn small" onclick="simCanva()">🎨 توليد</button>
+      <div class="output" id="cvOut"></div>
+    </div>
+    <div class="steps"><b>الخطوات:</b> اكتب الوصف → اختر التصميم.</div>
+  </div>
+
+  <!-- 5. Brisk -->
+  <div class="tool-card" data-aos="fade-up" data-aos-delay="200">
+    <div class="tool-header">
+      <h2>5. Brisk / Diffit</h2>
+      <a href="https://www.briskteaching.com/" target="_blank" class="ext-link">🔗 الأداة</a>
+    </div>
+    <div class="func">حوّل نصاً واحداً إلى مستويات صعوبة مختلفة.</div>
+    <div class="sim-box">
+      <label>النص الأصلي</label>
+      <div class="level-text" id="brOriginal">تعد كلمات المرور القوية ضرورية لحماية الحسابات.</div>
+      <div class="chips" id="brLevels" style="margin-top:10px; justify-content: center;"></div>
+      <div class="output" id="brOut"></div>
+    </div>
+    <div class="steps"><b>الخطوات:</b> الصق النص → اختر مستوى الصف.</div>
+  </div>
+
+  <!-- 6. Text-to-Video -->
+  <div class="tool-card" data-aos="fade-up" data-aos-delay="300">
+    <div class="tool-header">
+      <h2>6. تحويل النص إلى فيديو</h2>
+      <a href="https://www.canva.com/ai-video-generator/" target="_blank" class="ext-link">🔗 الأداة</a>
+    </div>
+    <div class="func">تحويل فكرة الدرس إلى فيديو قصير جذاب.</div>
+    <div class="sim-box">
+      <label>اكتب فكرة الفيديو</label>
+      <input type="text" id="vidText" value="رحلة داخل جهاز الحاسوب">
+      <button class="btn small" onclick="simVideo()">🎬 توليد</button>
+      <div class="video-sim" id="vidOut">
+        <div class="scanline"></div>
+        <div class="video-text" id="vidOutText">جاري التحميل...</div>
+      </div>
+    </div>
+    <div class="steps"><b>الخطوات:</b> اكتب الفكرة → اضغط توليد.</div>
+  </div>
+
+  <!-- 7. Text-to-Website -->
+  <div class="tool-card" data-aos="fade-up" data-aos-delay="100">
+    <div class="tool-header">
+      <h2>7. تحويل النص إلى موقع</h2>
+      <a href="https://www.framer.com/ai/" target="_blank" class="ext-link">🔗 الأداة</a>
+    </div>
+    <div class="func">تحويل خطة الدرس إلى صفحة ويب تفاعلية.</div>
+    <div class="sim-box">
+      <label>عنوان الدرس</label>
+      <input type="text" id="webText" value="الروبوتات والذكاء الاصطناعي">
+      <button class="btn small" onclick="simWeb()">💻 توليد</button>
+      <div class="website-sim" id="webOut">
+        <div class="web-header"><span>🌐 موقع الدرس</span></div>
+        <div class="web-body">
+          <h3 id="webOutTitle">عنوان الدرس</h3>
+          <p style="font-size: 0.7rem; color: #666;">لصف <span id="webOutGrade"></span></p>
+        </div>
+      </div>
+    </div>
+    <div class="steps"><b>الخطوات:</b> اكتب العنوان → اضغط توليد.</div>
+  </div>
+
+  <!-- 8. لعبة المسابقات -->
+  <div class="tool-card" data-aos="fade-up" data-aos-delay="200" style="border-color: var(--accent2);">
+    <div class="tool-header">
+      <h2>8. مسابقة التحدي</h2>
+      <a href="https://quizizz.com/" target="_blank" class="ext-link">🔗 الأداة</a>
+    </div>
+    <div class="func">لعبة أسئلة تفاعلية تشعل الحماس.</div>
+    <div class="sim-box">
+      <button class="btn" style="background: linear-gradient(90deg, #a78bfa, #ec4899);" onclick="startQuiz()">🚀 ابدأ المسابقة</button>
+      <div class="quiz-container" id="quizBox">
+        <div class="quiz-question" id="qText">السؤال هنا</div>
+        <div class="quiz-options" id="qOpts"></div>
+        <div class="quiz-score" id="qScore">النقاط: 0</div>
+      </div>
+    </div>
+    <div class="steps"><b>الخطوات:</b> ابدأ → اقرأ → اختر → اجمع!</div>
+  </div>
+
+</div>
+
+<footer>
+  <p style="font-weight: bold; color: #fff; margin-bottom: 5px;">إعداد: ENG. Mahmoud Zein-ELdeen</p>
+  <p style="margin-bottom: 5px;">إشراف: أ. محمد الخولي</p>
+  <p>ثانوية مشكاة المنار الأهلية بالدمام</p>
+</footer>
+
+<script>
+/* ========== مكتبة الحركات ========== */
+AOS.init({ duration: 800, once: true, offset: 100 });
+
+/* ========== تثبيت PWA ========== */
+const manifestData = {
+  name: "معمل الذكاء الاصطناعي", short_name: "معمل AI", start_url: ".", display: "standalone",
+  background_color: "#0f172a", theme_color: "#0f172a",
+  icons: [{ src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzM4YmRmOCIvPjx0ZXh0IHg9IjUwIiB5PSI2NSIgZm9udC1zaXplPSI1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZiI+QUk8L3RleHQ+PC9zdmc+", sizes: "192x192", type: "image/svg+xml" }]
+};
+const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});
+document.head.insertAdjacentHTML('beforeend', `<link rel="manifest" href="${URL.createObjectURL(manifestBlob)}">`);
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+
+async function installPWA() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') document.getElementById('pwaInstallBtn').style.display = 'none';
+    deferredPrompt = null;
+  } else {
+    alert("💡 للتثبيت على الجوال:\n\n1. اضغط على خيارات المتصفح (⋮) أو (مشاركة).\n2. اختر 'تثبيت التطبيق' أو 'إضافة إلى الشاشة الرئيسية'.");
+  }
+}
+
+/* ========== الصفوف ========== */
+const grades = ["الأول الابتدائي","الثاني الابتدائي","الثالث الابتدائي","الرابع الابتدائي","الخامس الابتدائي","السادس الابتدائي","الأول المتوسط","الثاني المتوسط","الثالث المتوسط","الأول الثانوي","الثاني الثانوي","الثالث الثانوي"];
+let currentGrade = grades[0];
+const bar = document.getElementById('gradeBar');
+grades.forEach((g,i)=>{
+  const b = document.createElement('button'); b.textContent = g; b.onclick = ()=>selectGrade(i); bar.appendChild(b);
+});
+function selectGrade(i){
+  currentGrade = grades[i];
+  [...bar.children].forEach((b,idx)=>b.classList.toggle('active',idx===i));
+  document.querySelectorAll('.output').forEach(o=>{o.classList.remove('show');o.innerHTML='';});
+  document.getElementById('nbActions').style.display='none';
+  document.getElementById('fileUpload').value = ''; // إعادة تعيين حقل الملف
+  document.getElementById('fileNameDisplay').style.display = 'none';
+  stopSpeech();
+  buildBriskLevels();
+}
+selectGrade(0);
+
+/* ========== التعامل مع رفع الملفات الحقيقي ========== */
+function handleFileUpload(event) {
+  const file = event.target.files[0];
+  if (file) {
+    // إظهار اسم الملف
+    const display = document.getElementById('fileNameDisplay');
+    display.textContent = "✅ تم اختيار: " + file.name;
+    display.style.display = 'block';
+    
+    // إظهار أزرار المحاكاة
+    document.getElementById('nbActions').style.display = 'flex';
+    
+    // عرض رسالة نجاح
+    const out = document.getElementById('nbOut');
+    out.classList.add('show');
+    out.innerHTML = `<h4>✅ تم رفع الملف بنجاح</h4><p>الملف: ${file.name} — الصف: ${currentGrade}</p><p style="font-size:0.75rem; color:#94a3b8;">(في الأداة الحقيقية، سيقوم الذكاء الاصطناعي بقراءة محتوى هذا الملف).</p>`;
+  }
+}
+
+/* ========== Web Speech API ========== */
+let currentUtterance = null, speechBtn = null;
+function speak(text, btn){
+  if(!('speechSynthesis' in window)) return alert('متصفحك لا يدعم الصوت.');
+  window.speechSynthesis.cancel();
+  if(speechBtn){ speechBtn.classList.remove('speaking'); speechBtn.textContent='▶️ تشغيل'; }
+  if(speechBtn === btn && btn.dataset.playing==='1'){ btn.dataset.playing='0'; speechBtn = null; return; }
+
+  currentUtterance = new SpeechSynthesisUtterance(text);
+  currentUtterance.lang = 'ar-SA'; currentUtterance.rate = 0.95;
+  const voices = window.speechSynthesis.getVoices();
+  const arVoice = voices.find(v=>v.lang.startsWith('ar'));
+  if(arVoice) currentUtterance.voice = arVoice;
+  currentUtterance.onend = ()=>{ if(btn){ btn.textContent='▶️ تشغيل'; btn.classList.remove('speaking'); btn.dataset.playing='0'; } speechBtn = null; };
+  window.speechSynthesis.speak(currentUtterance);
+  if(btn){ btn.textContent='⏹️ إيقاف'; btn.classList.add('speaking'); btn.dataset.playing='1'; speechBtn = btn; }
+}
+function stopSpeech(){ if('speechSynthesis' in window) window.speechSynthesis.cancel(); if(speechBtn){ speechBtn.classList.remove('speaking'); speechBtn.textContent='▶️ تشغيل'; speechBtn.dataset.playing='0'; speechBtn=null; } }
+
+/* ========== تصدير PDF ========== */
+function exportPDF(elementId, filename){
+  const el = document.getElementById(elementId);
+  if(!el || !el.innerHTML.trim()) return alert('لا توجد نتيجة للتصدير.');
+  const opt = { margin: 10, filename: filename, image: { type:'jpeg', quality:0.98 }, html2canvas: { scale:2 }, jsPDF: { unit:'mm', format:'a4', orientation:'portrait' } };
+  const wrapper = document.createElement('div');
+  wrapper.style.padding = '20px'; wrapper.style.background = '#ffffff'; wrapper.style.color = '#000'; wrapper.style.direction = 'rtl';
+  wrapper.innerHTML = `<h2 style="color:#1e3a8a;">ثانوية مشكاة المنار</h2><p>الصف: ${currentGrade}</p><hr>${el.innerHTML}`;
+  document.body.appendChild(wrapper);
+  html2pdf().set(opt).from(wrapper).save().then(()=>{ document.body.removeChild(wrapper); });
+}
+
+/* ========== محاكاة الأدوات ========== */
+function simNotebook(el, action){
+  const out = document.getElementById('nbOut'); out.classList.add('show'); stopSpeech();
+  if(action==='summary') out.innerHTML = `<h4>📝 ملخص</h4><ul><li>المفهوم: الخوارزمية تسلسل خطوات.</li><li>مثال: ترتيب خطوات حل مسألة.</li></ul><button class="btn pdf" onclick="exportPDF('nbOut','ملخص.pdf')">📄 تصدير PDF</button>`;
+  if(action==='questions') out.innerHTML = `<h4>❓ 5 أسئلة</h4><ul><li>1. ما هي الخوارزمية؟</li><li>2. اذكر خطوتين.</li><li>3. لماذا الترتيب مهم؟</li></ul><button class="btn pdf" onclick="exportPDF('nbOut','أسئلة.pdf')">📄 تصدير PDF</button>`;
+  if(action==='audio'){
+    const txt = `مرحباً، هذا ملخص لصف ${currentGrade}. الخوارزمية هي خطوات مرتبة.`;
+    out.innerHTML = `<h4>🎧 صوت</h4><div class="chips"><span class="chip" data-playing="0" onclick="speak(\`${txt}\`, this)">▶️ تشغيل</span><span class="chip" onclick="stopSpeech()">⏹️ إيقاف</span></div>`;
+  }
+}
+
+function simMagic(){
+  const sub = document.getElementById('msSubject').value, top = document.getElementById('msTopic').value;
+  const out = document.getElementById('msOut'); out.classList.add('show');
+  out.innerHTML = `<h4>📚 خطة درس</h4><p><b>${sub}:</b> ${top}</p><ul><li>هدف: شرح ${top}.</li><li>نشاط: تدريب عملي.</li></ul><button class="btn pdf" onclick="exportPDF('msOut','خطة.pdf')">📄 PDF</button>`;
+}
+
+function simGemini(){
+  const t = document.getElementById('gmText').value;
+  const out = document.getElementById('gmOut'); out.classList.add('show');
+  out.innerHTML = `<h4>✨ نتيجة</h4><p>الأسئلة المولدة لـ: ${t}</p><button class="btn pdf" onclick="exportPDF('gmOut','gemini.pdf')">📄 PDF</button>`;
+}
+
+function simCanva(){
+  const d = document.getElementById('cvDesc').value;
+  const out = document.getElementById('cvOut'); out.classList.add('show');
+  out.innerHTML = `<h4>🎨 تصاميم</h4><p>${d}</p><div style="height:50px; background:#333; margin-top:10px; border-radius:5px;"></div><button class="btn pdf" onclick="exportPDF('cvOut','canva.pdf')">📄 PDF</button>`;
+}
+
+function buildBriskLevels(){
+  const wrap = document.getElementById('brLevels'); wrap.innerHTML = '';
+  ['easy','mid','hard'].forEach(l=>{
+    const c = document.createElement('span'); c.className='chip'; c.textContent = l==='easy'?'مبسط':l==='mid'?'متوسط':'متقدم';
+    c.onclick = ()=>simBrisk(l); wrap.appendChild(c);
+  });
+}
+function simBrisk(l){
+  const out = document.getElementById('brOut'); out.classList.add('show');
+  let txt = l==='easy'?'كلمة المرور تحمي حسابك.':l==='mid'?'كلمات المرور القوية ضرورية للحماية.':'تُعد كلمات المرور القوية ضرورة لحماية الحسابات.';
+  out.innerHTML = `<h4>📖 نسخة</h4><p>${txt}</p><button class="btn pdf" onclick="exportPDF('brOut','brisk.pdf')">📄 PDF</button>`;
+}
+buildBriskLevels();
+
+function simVideo(){
+  const t = document.getElementById('vidText').value;
+  document.getElementById('vidOut').classList.add('show');
+  document.getElementById('vidOutText').textContent = "⏳ جاري التوليد...";
+  setTimeout(()=>{ document.getElementById('vidOutText').textContent = `🎬 "${t}"`; }, 1500);
+}
+
+function simWeb(){
+  document.getElementById('webOut').classList.add('show');
+  document.getElementById('webOutTitle').textContent = document.getElementById('webText').value;
+  document.getElementById('webOutGrade').textContent = currentGrade;
+}
+
+/* ========== المسابقة ========== */
+const quizData = [
+  { q: "ما هو الذكاء الاصطناعي؟", opts: ["برنامج يقوم بمهام ذكية", "روبوت فقط", "لعبة"], ans: 0 },
+  { q: "أي من التالي خوارزمية؟", opts: ["ترتيب الغرفة", "لون السماء", "شكل الجبل"], ans: 0 }
+];
+let qIndex = 0, score = 0;
+function startQuiz(){ qIndex = 0; score = 0; document.getElementById('quizBox').classList.add('show'); loadQuestion(); }
+function loadQuestion(){
+  if(qIndex >= quizData.length){
+    document.getElementById('qText').innerHTML = `🎉 النتيجة: ${score} من ${quizData.length}`;
+    document.getElementById('qOpts').innerHTML = ''; return;
+  }
+  const q = quizData[qIndex];
+  document.getElementById('qText').textContent = `${qIndex + 1}. ${q.q}`;
+  document.getElementById('qScore').textContent = `النقاط: ${score}`;
+  const opts = document.getElementById('qOpts'); opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const b = document.createElement('div'); b.className = 'quiz-opt'; b.textContent = o;
+    b.onclick = () => checkAnswer(i, b); opts.appendChild(b);
+  });
+}
+function checkAnswer(sel, btn){
+  const q = quizData[qIndex];
+  document.querySelectorAll('.quiz-opt').forEach(o => o.style.pointerEvents = 'none');
+  if(sel === q.ans){ btn.classList.add('correct'); score++; if('speechSynthesis' in window){ const u = new SpeechSynthesisUtterance("صحيح!"); u.lang='ar-SA'; window.speechSynthesis.speak(u);} }
+  else { btn.classList.add('wrong'); document.querySelectorAll('.quiz-opt')[q.ans].classList.add('correct'); if('speechSynthesis' in window){ const u = new SpeechSynthesisUtterance("خطأ"); u.lang='ar-SA'; window.speechSynthesis.speak(u);} }
+  setTimeout(() => { qIndex++; loadQuestion(); }, 1500);
+}
+</script>
+
+</body>
+</html>
