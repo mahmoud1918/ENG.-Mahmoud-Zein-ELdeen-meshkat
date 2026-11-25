@@ -486,32 +486,36 @@
     </div>
   </div>
 
-  <!-- 7. Text-to-Website -->
+  <!-- 7. DeepSeek (الأداة الجديدة) -->
   <div class="tool-card" data-aos="fade-up" data-aos-delay="100">
     <div class="tool-header">
-      <h2>7. تحويل النص إلى موقع</h2>
-      <a href="https://www.framer.com/ai/" target="_blank" class="ext-link">🔗 الأداة</a>
+      <h2>7. DeepSeek (للمواقع والألعاب)</h2>
+      <a href="https://chat.deepseek.com/" target="_blank" class="ext-link">🔗 الأداة</a>
     </div>
-    <div class="func">منصات مثل Framer AI تحول النص المكتوب إلى صفحة ويب حقيقية.</div>
+    <div class="func">أداة مجانية وقوية تحول النص إلى صفحة ويب تفاعلية أو لعبة تعليمية كاملة.</div>
     
     <div class="features-box">
       <h4>⭐ لماذا يجب أن تستخدمها؟</h4>
       <ul>
-        <li>إنشاء صفحة ويب تفاعلية كاملة لدرس معين دون كتابة كود.</li>
-        <li>وضع المصادر، الفيديوهات، والاختبارات في مكان واحد للطلاب.</li>
-        <li>تصميم تطبيق ويب مصغر لتلقي واجبات الطلاب أو استبياناتهم.</li>
+        <li><b>مجانية بالكامل:</b> لا تحتاج لبطاقة ائتمان أو اشتراك مدفوع، متاحة للجميع.</li>
+        <li><b>توليد الألعاب التعليمية:</b> اصنع ألعاباً تفاعلية (مثل "المتاهة" أو "البطاقات التعليمية") بوصف بسيط.</li>
+        <li><b>بناء المواقع:</b> أنشئ صفحة ويب كاملة لدرسك أو لتلقي واجبات الطلاب دون كتابة كود.</li>
+        <li><b>دعم اللغة العربية:</b> تفهم الأوامر العربية وتنفذها بدقة.</li>
       </ul>
     </div>
 
     <div class="sim-box">
-      <label>عنوان الدرس</label>
-      <input type="text" id="webText" value="الروبوتات والذكاء الاصطناعي">
-      <button class="btn small" onclick="simWeb()">💻 توليد</button>
+      <label>اكتب وصف الموقع أو اللعبة التعليمية</label>
+      <input type="text" id="webText" value="لعبة تعليمية عن أجزاء الخلية">
+      <button class="btn small" onclick="simWeb()">💻 توليد الكود</button>
+      
       <div class="website-sim" id="webOut">
-        <div class="web-header"><span>🌐 موقع الدرس</span></div>
+        <div class="web-header"><span>🌐 الناتج من DeepSeek</span></div>
         <div class="web-body">
-          <h3 id="webOutTitle">عنوان الدرس</h3>
+          <h3 id="webOutTitle">عنوان المشروع</h3>
           <p style="font-size: 0.7rem; color: #666;">لصف <span id="webOutGrade"></span></p>
+          <p style="font-size: 0.7rem; color: #38bdf8; margin-top: 8px;">✅ تم توليد كود HTML/CSS/JS بنجاح</p>
+          <div style="margin-top: 10px; height: 40px; background: #e2e8f0; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 0.7rem;">[ معاينة اللعبة أو الموقع ]</div>
         </div>
       </div>
     </div>
@@ -556,7 +560,7 @@
 /* ========== مكتبة الحركات ========== */
 AOS.init({ duration: 800, once: true, offset: 100 });
 
-/* ========== الأصوات السحرية (المؤثرات) ========== */
+/* ========== الأصوات السحرية ========== */
 let audioCtx;
 function initAudio() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -573,20 +577,14 @@ function playTone(freq, type, duration) {
 function playClickSound() { initAudio(); playTone(600, 'sine', 0.1); }
 function playSuccessSound() { initAudio(); playTone(400, 'sine', 0.1); setTimeout(()=>playTone(600, 'sine', 0.1), 100); setTimeout(()=>playTone(800, 'sine', 0.2), 200); }
 
-/* ========== الترحيب الصوتي (ملفك الخاص) ========== */
-// هنا قمنا باستبدال الصوت الآلي بملف MP3 خارجي
+/* ========== الترحيب الصوتي ========== */
 let welcomeAudioObj = new Audio('welcome.mp3'); 
 
 function playWelcomeAudio() {
   initAudio();
-  // إيقاف أي صوت شغال حالياً
   welcomeAudioObj.pause();
   welcomeAudioObj.currentTime = 0;
-  
-  // تشغيل ملفك الصوتي
-  welcomeAudioObj.play().catch(e => {
-    console.log("المتصفح منع التشغيل التلقائي. يرجى التفاعل أولاً.");
-  });
+  welcomeAudioObj.play().catch(e => { console.log("المتصفح منع التشغيل التلقائي."); });
 }
 
 function enterApp() {
@@ -596,10 +594,10 @@ function enterApp() {
   setTimeout(() => { playWelcomeAudio(); }, 500);
 }
 
-/* ========== إعداد الصوت للنصوص الأخرى (الأسئلة والمسابقة) ========== */
+/* ========== دالة اختيار صوت الرجل العربي ========== */
 function getArabicMaleVoice() {
   const voices = window.speechSynthesis.getVoices();
-  let arabicVoice = voices.find(v => v.lang.startsWith('ar') && (v.name.includes('Naayf') || v.name.includes('Maged') || v.name.includes('Male') || v.name.includes('رجل')));
+  let arabicVoice = voices.find(v => v.lang.startsWith('ar') && (v.name.includes('Naayf') || v.name.includes('Maged') || v.name.includes('Male')));
   if (!arabicVoice) arabicVoice = voices.find(v => v.lang.startsWith('ar'));
   return arabicVoice;
 }
